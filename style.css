@@ -1,0 +1,24 @@
+.board {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  gap: 4px;
+}
+
+.flexal {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+.letter-box {
+  border: 4px;
+  border-color: black;
+  border-style: solid;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 25px;
+}
