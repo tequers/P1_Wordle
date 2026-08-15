@@ -79,7 +79,8 @@ function getWord(row) {
   }
   return word;
 }
-
+//returns an eval of length solucion.length where for every
+// letter there's a possible value of the properties of letter_states
 function evaluar(intento, solucion) {
   // returns an array of "correcta" | "presente" | "ausente", same length as intento
   let eval = new Array(solucion.length).fill(letter_states.ABSENT);
@@ -151,6 +152,105 @@ function render(state) {
       paintBox(i, j, getEval(i, j));
     }
   }
+}
+
+function testEvaluar() {
+  // Define the test cases with the correct expected outcomes
+  const testCases = [
+    {
+      solucion: "SOSA",
+      intento: "OSOS",
+      // O (present), S (present), O (absent - no more O's left), S (present)
+      expected: [
+        letter_states.PRESENT,
+        letter_states.PRESENT,
+        letter_states.ABSENT,
+        letter_states.PRESENT,
+      ],
+    },
+    {
+      solucion: "CASAS",
+      intento: "SALSA",
+      // S (present), A (correct), L (absent), S (present), A (present)
+      expected: [
+        letter_states.PRESENT,
+        letter_states.CORRECT,
+        letter_states.ABSENT,
+        letter_states.PRESENT,
+        letter_states.PRESENT,
+      ],
+    },
+    {
+      solucion: "PERRO",
+      intento: "ROPAS",
+      // R (present), O (present), P (present), A (absent), S (absent)
+      expected: [
+        letter_states.PRESENT,
+        letter_states.PRESENT,
+        letter_states.PRESENT,
+        letter_states.ABSENT,
+        letter_states.ABSENT,
+      ],
+    },
+    {
+      solucion: "PERRO",
+      intento: "PERRO",
+      // All correct
+      expected: [
+        letter_states.CORRECT,
+        letter_states.CORRECT,
+        letter_states.CORRECT,
+        letter_states.CORRECT,
+        letter_states.CORRECT,
+      ],
+    },
+    {
+      solucion: "PLATO",
+      intento: "TAPAS",
+      // T (present), A (present), P (present), A (absent - only one A in PLATO), S (absent)
+      expected: [
+        letter_states.PRESENT,
+        letter_states.PRESENT,
+        letter_states.PRESENT,
+        letter_states.ABSENT,
+        letter_states.ABSENT,
+      ],
+    },
+    {
+      solucion: "MORAS",
+      intento: "ROSAS",
+      // R (present), O (correct), S (absent - the only S in MORAS is exact matched at the end), A (correct), S (correct)
+      expected: [
+        letter_states.PRESENT,
+        letter_states.CORRECT,
+        letter_states.ABSENT,
+        letter_states.CORRECT,
+        letter_states.CORRECT,
+      ],
+    },
+  ];
+
+  // Run through each case
+  for (let i = 0; i < testCases.length; i++) {
+    const { solucion, intento, expected } = testCases[i];
+
+    // Call your function
+    const result = evaluar(intento, solucion);
+
+    // Convert arrays to strings for an easy deep equality check
+    const resultStr = JSON.stringify(result);
+    const expectedStr = JSON.stringify(expected);
+
+    if (resultStr !== expectedStr) {
+      // Throw error indicating exactly which one failed and what it returned vs what was expected
+      throw new Error(
+        `Failed at word pair: Solucion "${solucion}", Intento "${intento}".\n` +
+          `Expected: ${expectedStr}\n` +
+          `Got:      ${resultStr}`,
+      );
+    }
+  }
+  return true;
 }
 
 render(state_midgame);
